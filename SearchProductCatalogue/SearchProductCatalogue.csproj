@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+	  <TargetFramework>net6.0</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+	  <AWSProjectType>Lambda</AWSProjectType>
+	  <!-- This property makes the build directory similar to a publish directory and helps the AWS .NET Lambda Mock Test Tool find project dependencies. -->
+	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	  <!-- Generate ready to run images during publishing to improve cold start time. -->
+	  <PublishReadyToRun>true</PublishReadyToRun>
+  </PropertyGroup>
+  <!-- 
+  When publishing Lambda functions for ARM64 to the provided.al2 runtime a newer version of libicu needs to be included
+  in the deployment bundle because .NET requires a newer version of libicu then is preinstalled with Amazon Linux 2.
+  -->
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'linux-arm64'">
+    <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="68.2.0.9" />
+    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="68.2.0.9" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.RuntimeSupport" Version="1.8.7" />
+    <PackageReference Include="Amazon.Lambda.Core" Version="2.1.0" />
+    <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.3.1" />
+    <PackageReference Include="Amazon.Lambda.SNSEvents" Version="2.0.0" />
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.101.83" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SearchProductCatalogue.Core\SearchProductCatalogue.Core.csproj" />
+    <ProjectReference Include="..\SearchProductCatalogue.Infrastructure\SearchProductCatalogue.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>
